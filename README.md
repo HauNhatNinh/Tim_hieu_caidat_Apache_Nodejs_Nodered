@@ -280,21 +280,21 @@ node-red-contrib-cron-plus`
 ### Nhận xét bài làm của mình:
 - Về quá trình cài đặt các phần mềm và thư viện
   - Những gì đã hiểu:
-   - Cài đặt Node-RED: Đã nắm được cách cài đặt Node-RED thông qua npm, khởi động service và truy cập giao diện web tại http://localhost:1880
-   - Cài đặt thư viện MSSQL: Hiểu được cần cài đặt package node-red-contrib-mssql-plus trong thư mục ~/.node-red để Node-RED có thể kết nối với SQL Server
-- Cấu hình SQL Server: Đã nắm được các bước:
-  - Enable TCP/IP Protocol trong SQL Server Configuration Manager
-  - Mở port 1433 cho kết nối từ xa
-  - Cấu hình SQL Server Authentication mode
-  - Tạo user và phân quyền truy cập database
-  - Dependency giữa các thành phần: Hiểu được mối quan hệ:
-  - SQL Server ← Node-RED (MSSQL node) ← Frontend (fetch API)
+    - Cài đặt Node-RED: Đã nắm được cách cài đặt Node-RED thông qua npm, khởi động service và truy cập giao diện web tại http://localhost:1880
+    - Cài đặt thư viện MSSQL: Hiểu được cần cài đặt package node-red-contrib-mssql-plus trong thư mục ~/.node-red để Node-RED có thể kết nối với SQL Server
+  - Cấu hình SQL Server: Đã nắm được các bước:
+    - Enable TCP/IP Protocol trong SQL Server Configuration Manager
+    - Mở port 1433 cho kết nối từ xa
+    - Cấu hình SQL Server Authentication mode
+    - Tạo user và phân quyền truy cập database
+    - Dependency giữa các thành phần: Hiểu được mối quan hệ:
+    - SQL Server ← Node-RED (MSSQL node) ← Frontend (fetch API)
 
-#### Khó khăn gặp phải:**
+#### Khó khăn gặp phải:
 - Ban đầu gặp lỗi kết nối SQL Server do chưa enable TCP/IP
 - Lỗi "Trust Server Certificate" cần phải cấu hình đúng trong node MSSQL
 - Phải khởi động lại Node-RED sau khi cài thư viện mới
-#### Bài học kinh nghiệm:**
+#### Bài học kinh nghiệm:
 - Luôn kiểm tra service SQL Server Browser đã chạy chưa
 - Đọc kỹ error log trong Node-RED Debug tab để xác định lỗi
 - Nên test connection trực tiếp trước khi build flow phức tạp
@@ -302,3 +302,109 @@ node-red-contrib-cron-plus`
 Những gì đã hiểu:
 #### Cấu trúc cơ bản của một API endpoint:
 `HTTP IN → Function (xử lý logic) → MSSQL → Function (format) → HTTP Response`
+
+#### Các node quan trọng:
+- HTTP IN node: Nhận request từ client với method GET/POST và URL endpoint
+- Function node: Viết JavaScript để xây dựng SQL query động dựa trên query parameters
+- MSSQL node: Thực thi câu lệnh SQL và trả về kết quả
+- HTTP Response node: Gửi dữ liệu JSON về client
+
+#### Ưu điểm của Node-RED:
+- Visual programming - dễ hiểu luồng xử lý
+- Không cần setup server phức tạp như Express.js
+- Debug trực quan qua Debug tab
+- Hot reload khi deploy changes
+
+#### Hạn chế nhận thấy:
+- Code JavaScript phân tán trong nhiều function nodes
+- Khó quản lý khi flow phức tạp
+- Không có TypeScript support
+- Bảo mật còn hạn chế (chưa có authentication/authorization)
+
+#### Về cách front-end tương tác với back-end
+Những gì đã hiểu:
+1. Sử dụng Fetch API:
+  ` async function loadMenu() {
+    const res = await fetch(`${API_BASE}/menu?search=${search}`);
+    const data = await res.json();
+    // Xử lý dữ liệu
+}`
+
+2. Luồng tương tác:
+`
+User Action → JavaScript Event → Fetch API Call → Node-RED API
+    ↓
+Node-RED SQL Query → SQL Server → Trả dữ liệu JSON
+    ↓
+Frontend nhận JSON → Parse data → Render HTML động`
+
+3. Xử lý bất đồng bộ:
+- Sử dụng async/await cho code dễ đọc hơn callbacks
+- Xử lý loading state khi đang fetch data
+- Try-catch để bắt lỗi kết nối
+
+4. Dynamic HTML rendering:
+  `data.forEach(item => {
+    html += `<tr><td>${item.TenMon}</td>...</tr>`;
+});
+element.innerHTML = html;`
+
+5. Query parameters:
+- Sử dụng encodeURIComponent() để encode tham số có ký tự đặc biệt
+- Build URL động: ?search=${value}&loai=${type}
+
+6. Error handling:
+   `try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('API Error');
+} catch (err) {
+    showError('Không thể kết nối server');
+}  `
+
+#### Quy trình làm việc với data:
+- User interaction: Click button, nhập search, chọn filter
+- Client-side validation: Kiểm tra input (trim, validate)
+- API call: Gửi request với parameters
+- Server processing: Node-RED nhận, query SQL, trả về JSON
+- Client rendering: Parse JSON, tạo HTML, cập nhật DOM
+- Error feedback: Hiển thị loading, success, error states
+
+Best practices đã áp dụng:
+- Tách biệt API_BASE để dễ thay đổi endpoint
+- Tạo các functions riêng cho từng chức năng (loadMenu, loadOrders...)
+- Hiển thị loading indicator khi fetch data
+- Xử lý trường hợp không có data (empty state)
+- Format số tiền với toLocaleString()
+- Format ngày tháng theo chuẩn Việt Nam
+
+Hiệu suất:
+-Mỗi tab load data riêng biệt, không load tất cả cùng lúc
+- Cache dropdown options (loại món) để không query lại
+- Debounce có thể thêm cho search input để giảm số lần gọi API
+
+### Tổng kết
+- Mức độ hoàn thành:
+  - Cài đặt thành công môi trường phát triển: 100%
+  - Tạo database với dữ liệu mẫu: 100%
+  - Xây dựng API backend với Node-RED: 100%
+  - Xây dựng giao diện frontend: 100%
+  - Xử lý lỗi và bảo mật: 70% (còn cần cải thiện)
+
+- Kỹ năng đã học được:
+
+  - Thiết kế và triển khai REST API
+  - Làm việc với SQL Server từ Node-RED
+  - Xử lý dữ liệu bất đồng bộ với async/await
+  - DOM manipulation và dynamic rendering
+  - Debugging và troubleshooting
+
+- Hướng phát triển tiếp theo:
+
+  - Bảo mật: Thêm JWT authentication, validate input chống SQL injection
+  - Tối ưu: Thêm caching, pagination cho dữ liệu lớn
+  - UX: Loading skeleton, toast notification, confirm dialogs
+  - Chức năng: CRUD operations (Create, Update, Delete)
+  - Deployment: Cấu hình production environment, HTTPS, reverse proxy
+
+## Kết luận:
+Qua bài lab này, em đã hiểu rõ quy trình phát triển một ứng dụng web full-stack đơn giản từ A-Z, từ thiết kế database, xây dựng API backend với Node-RED, đến phát triển giao diện frontend tương tác với API. Quan trọng nhất là đã nắm được cách các thành phần trong hệ thống giao tiếp với nhau và cách debug khi gặp lỗi.
