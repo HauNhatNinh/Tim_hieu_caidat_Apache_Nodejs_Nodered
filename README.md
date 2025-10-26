@@ -75,3 +75,47 @@ node "D:\nodejs\nodered\node_modules\node-red\red.js" -u "D:\nodejs\nodered\work
 - Nếu xuất hiện dòng Internet services successfully stopped → OK.
 
 <img width="1920" height="1080" alt="Screenshot (2)" src="https://github.com/user-attachments/assets/faab871a-4fd1-44ea-9773-eb7f2634759d" />
+
+#### B2. Tải và giải nén Apache
+- Truy cập: `https://www.apachelounge.com/download/`
+- Tải bản mới nhất, ví dụ: `httpd-2.4.58-win64-VS17.zip`
+
+<img width="1920" height="1080" alt="Screenshot (3)" src="https://github.com/user-attachments/assets/38f84015-91d8-479b-8b2b-b217b3534040" />
+
+- Giải nén vào: G:\Apache24
+
+<img width="1920" height="1080" alt="Screenshot (5)" src="https://github.com/user-attachments/assets/d81d7415-c414-4360-99be-1a8c4ecb8633" />
+
+Kiểm tra thư mục tồn tại:
+`G:\Apache24\bin
+ G:\Apache24\conf
+ G:\Apache24\htdocs`
+
+#### B3. Chỉnh file cấu hình chính
+- Mở file:
+  `G:\Apache24\conf\httpd.conf`
+- Tìm và sửa các dòng:
+  - `Define SRVROOT` thành `Define SRVROOT "G:/Apache24"` để thay đường dẫn gốc 
+  - Bỏ dấu *#* ở trước dòng `Include conf/extra/httpd-vhosts.conf` để bật VirtualHost
+
+<img width="1920" height="1080" alt="Screenshot (7)" src="https://github.com/user-attachments/assets/8ece0395-f707-42fc-8b1d-50ebd92aeae8" />
+
+<img width="1920" height="1080" alt="Screenshot (8)" src="https://github.com/user-attachments/assets/d1513e32-4b2e-47d1-b4ea-f7bdde6ffddf" />
+
+#### B4. Cấu hình VirtualHost
+- Mở: `G:\Apache24\conf\extra\httpd-vhosts.conf`
+- Xóa nội dung cũ, thêm đoạn sau:
+   `<VirtualHost *:80>
+    ServerAdmin admin@haunhatninh.com
+    DocumentRoot "G:/Apache24/haunhatninh"
+    ServerName haunhatninh.com
+    ServerAlias www.haunhatninh.com
+    ErrorLog "logs/haunhatninh-error.log"
+    CustomLog "logs/haunhatninh-access.log" common`
+
+    `<Directory "G:/Apache24/haunhatninh">
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>`
