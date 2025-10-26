@@ -105,17 +105,200 @@ Kiểm tra thư mục tồn tại:
 #### B4. Cấu hình VirtualHost
 - Mở: `G:\Apache24\conf\extra\httpd-vhosts.conf`
 - Xóa nội dung cũ, thêm đoạn sau:
-   `<VirtualHost *:80>
-    ServerAdmin admin@haunhatninh.com
-    DocumentRoot "G:/Apache24/haunhatninh"
-    ServerName haunhatninh.com
-    ServerAlias www.haunhatninh.com
-    ErrorLog "logs/haunhatninh-error.log"
-    CustomLog "logs/haunhatninh-access.log" common`
 
-    `<Directory "G:/Apache24/haunhatninh">
-        Options Indexes FollowSymLinks
-        AllowOverride All
-        Require all granted
-    </Directory>
-</VirtualHost>`
+<img width="1920" height="1080" alt="Screenshot (9)" src="https://github.com/user-attachments/assets/124f3544-8cf7-4ca5-bc60-bebadf37b5cd" />
+
+#### B5. Tạo thư mục web
+- Tạo thư mục:
+`G:\Apache24\haunhatninh`
+
+<img width="1920" height="1080" alt="Screenshot (10)" src="https://github.com/user-attachments/assets/6743e5e0-807b-49b4-9cbe-e6ec8b7b8ee8" />
+ 
+#### B6. Thêm domain ảo
+- Mở file bằng Notepad (Run as Administrator):
+`C:\Windows\System32\drivers\etc\hosts`
+- Thêm dòng cuối:
+`127.0.0.1    haunhatninh.com`
+- Lưu lại. 
+
+<img width="1920" height="1080" alt="Screenshot (13)" src="https://github.com/user-attachments/assets/5ccb16b6-3ce9-48e2-89aa-399f538e5ad1" />
+
+#### B7. Cài đặt và khởi động Apache
+- Mở CMD (Run as Administrator):
+`cd /d G:\Apache24\bin
+httpd.exe -k install
+httpd.exe -k start`
+
+<img width="1920" height="1080" alt="Screenshot (14)" src="https://github.com/user-attachments/assets/56621820-73e0-4716-9c5a-ff2a2d5cd4ab" />
+
+- Kiểm tra:
+  - Mở trình duyệt → truy cập: http://doduycop.com
+  - Nếu thấy chữ “It works!” hoặc lỗi 403 → Apache chạy thành công.
+
+<img width="1920" height="1080" alt="Screenshot (12)" src="https://github.com/user-attachments/assets/72ce9b56-feaa-4a36-b2f5-08a64194d703" />
+
+### CÀI NODE.JS VÀ NODE-RED
+#### B1. Cài Node.js
+- Tải file: `node-v20.19.5-x64.msi`
+
+<img width="1920" height="1080" alt="Screenshot (16)" src="https://github.com/user-attachments/assets/9e083e25-a7fe-4743-b4e9-5e292e1c0b54" />
+
+- Cài đặt → Chọn đường dẫn: `G:\nodejs`
+- Sau khi cài, mở CMD:
+`node -v
+npm -v`
+
+<img width="1920" height="1080" alt="Screenshot (17)" src="https://github.com/user-attachments/assets/5f6d4017-d4f7-4dea-930f-c8ca0bf0d24b" />
+
+- Nếu hiện version → OK.
+
+#### B2. Cài Node-RED
+- Mở CMD:
+`cd /d G:\nodejs
+npm install -g --unsafe-perm node-red --prefix "G:\nodejs\nodered"`
+
+<img width="1920" height="1080" alt="Screenshot (18)" src="https://github.com/user-attachments/assets/5241e9e6-8f33-4b43-a73a-42908e8a5d76" />
+
+<img width="1920" height="1080" alt="Screenshot (19)" src="https://github.com/user-attachments/assets/bbcaf0c1-375d-4ea4-ac4b-ee102f6ca637" />
+
+#### B3. Cài nssm (service manager)
+- Tải: `https://nssm.cc/release/nssm-2.24.zip`
+- Giải nén → copy file nssm.exe vào:
+`G:\nodejs\nodered\`
+
+<img width="1920" height="1080" alt="Screenshot (20)" src="https://github.com/user-attachments/assets/7b66fe06-e881-4bac-b1d4-e1941e6e0b26" />
+
+<img width="1920" height="1080" alt="Screenshot (21)" src="https://github.com/user-attachments/assets/f703fce1-2a5f-46e7-b4d4-f2d9310b2a16" />
+
+#### B4. Tạo file chạy Node-RED
+- Tạo file mới:
+`G:\nodejs\nodered\run-nodered.cmd`
+- Dán 5 dòng sau:
+  `@echo off
+   REM fix path
+   set PATH=D:\nodejs;%PATH%
+   REM Run Node-RED
+   node "G:\nodejs\nodered\node_modules\node-red\red.js" -u "G:\nodejs\nodered\work" %*`
+
+#### B5. Cài Node-RED làm service
+- Mở CMD:
+`cd /d G:\nodejs\nodered
+nssm.exe install a1-nodered "G:\nodejs\nodered\run-nodered.cmd"`
+
+<img width="1920" height="1080" alt="Screenshot (21)" src="https://github.com/user-attachments/assets/b211e03e-4b67-47db-b04e-bed57f451f27" />
+
+- Sau đó chạy:
+  `nssm start a1-nodered`
+- Mở trình duyệt → truy cập:
+  `http://localhost:1880`
+- Nếu thấy giao diện Node-RED → thành công!
+
+<img width="1920" height="1080" alt="Screenshot (23)" src="https://github.com/user-attachments/assets/04e73295-b60d-44f1-bcd0-667f623900a6" />
+
+### 2.3. TẠO CƠ SỞ DỮ LIỆU SQL SERVER
+- Mở SQL Server Management Studio (SSMS)
+- Tạo Database mới, ví dụ:
+
+<img width="1918" height="993" alt="image" src="https://github.com/user-attachments/assets/d1bb0764-3a55-4897-94db-ebf977b3cad0" />
+
+- Ghi nhớ thông tin:
+  `server: localhost
+   port: 1433
+   username: sa
+   password: ......
+   database: QL_CAFE_TNUT_FUN`
+
+####2.4. CÀI THƯ VIỆN TRÊN NODE-RED
+- Truy cập: `http://localhost:1880`
+- Vào Menu → Manage palette → Install
+- Tìm và cài các package sau:  
+`node-red-contrib-mssql-plus
+node-red-node-mysql
+node-red-contrib-telegrambot
+node-red-contrib-moment
+node-red-contrib-influxdb
+node-red-contrib-duckdns
+node-red-contrib-cron-plus`
+
+<img width="1920" height="1080" alt="Screenshot (27)" src="https://github.com/user-attachments/assets/1aa510be-4918-4708-80bb-7f6a75de972d" />
+
+- Bổ sung: chỉnh mật khẩu admin
+- Mở file: `G:\nodejs\nodered\work\settings.js`
+- Bỏ dấu // và sửa thành:
+`adminAuth: {
+    type: "credentials",
+    users: [{
+        username: "admin",
+        password: "sha256:b9c54f...chuỗi_mã_hóa...", 
+        permissions: "*"
+    }]
+},`
+
+<img width="1920" height="1080" alt="Screenshot (28)" src="https://github.com/user-attachments/assets/0285d3c9-07f5-494b-ab3a-8986e583d644" />
+
+- Để tạo mật khẩu mã hóa: truy cập `https://tms.tnut.edu.vn/pw.php`
+- Sau đó restart:
+  `cd /d G:\nodejs\nodered
+   nssm restart a1-nodered`
+
+<img width="1920" height="1080" alt="Screenshot (28)" src="https://github.com/user-attachments/assets/6075731a-46c4-4023-9a37-f343063014d4" />
+
+### 2.5. TẠO API BACKEND TRÊN NODE-RED
+- Truy cập Node-RED:
+`http://localhost:1880`
+- Tạo Flow 1 → Kéo các node:
+  1. http in  : dùng GET cho đơn giản, URL đặt tuỳ ý, ví dụ: /timkiem
+  2. function : để tiền xử lý dữ liệu gửi đến
+  3. MSSQL: để truy vấn dữ liệu tới CSDL, nhận tham số từ node tiền xử lý
+  4. http response: để phản hồi dữ liệu về client: Status Code=200, Header add : Content-Type = application/json
+  có thể thêm node `debug` để quan sát giá trị trung gian.
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/70fe6312-9c4f-4a0c-95e7-e5c96fdffea6" />
+
+- Test api thông qua trình duyệt, ví dụ: `http://localhost:1880/nhanvien`
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/592508c3-572f-4675-a715-fb9432be7924" />
+
+### 2.6. TẠO GIAO DIỆN FRONT-END
+- Trong thư mục:
+`G:\Apache24\haunhatninh\`
+- Tạo 3 file:
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/2fdd1c86-d8b9-4965-882e-5b471b821aa2" />
+
+### KIỂM TRA TOÀN BỘ HỆ THỐNG
+- Mở CMD:
+`httpd.exe -k start
+ nssm start a1-nodered`
+- Mở trình duyệt:
+`http://haunhatninh.com`
+- Nhập thử tên đồ uống → Nhấn “Tìm kiếm”
+- Hiện danh sách các loại cà phê → Hoàn thành!
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/45c9ed8e-9a4c-4da3-a3f2-4054d4f6c493" />
+
+### Nhận xét bài làm của mình:
+- Về quá trình cài đặt các phần mềm và thư viện
+  - Những gì đã hiểu:
+   - Cài đặt Node-RED: Đã nắm được cách cài đặt Node-RED thông qua npm, khởi động service và truy cập giao diện web tại http://localhost:1880
+   - Cài đặt thư viện MSSQL: Hiểu được cần cài đặt package node-red-contrib-mssql-plus trong thư mục ~/.node-red để Node-RED có thể kết nối với SQL Server
+- Cấu hình SQL Server: Đã nắm được các bước:
+  - Enable TCP/IP Protocol trong SQL Server Configuration Manager
+  - Mở port 1433 cho kết nối từ xa
+  - Cấu hình SQL Server Authentication mode
+  - Tạo user và phân quyền truy cập database
+  - Dependency giữa các thành phần: Hiểu được mối quan hệ:
+  - SQL Server ← Node-RED (MSSQL node) ← Frontend (fetch API)
+
+#### Khó khăn gặp phải:**
+- Ban đầu gặp lỗi kết nối SQL Server do chưa enable TCP/IP
+- Lỗi "Trust Server Certificate" cần phải cấu hình đúng trong node MSSQL
+- Phải khởi động lại Node-RED sau khi cài thư viện mới
+#### Bài học kinh nghiệm:**
+- Luôn kiểm tra service SQL Server Browser đã chạy chưa
+- Đọc kỹ error log trong Node-RED Debug tab để xác định lỗi
+- Nên test connection trực tiếp trước khi build flow phức tạp
+#### Về cách sử dụng Node-RED để tạo API back-end**
+Những gì đã hiểu:
+#### Cấu trúc cơ bản của một API endpoint:
+`HTTP IN → Function (xử lý logic) → MSSQL → Function (format) → HTTP Response`
