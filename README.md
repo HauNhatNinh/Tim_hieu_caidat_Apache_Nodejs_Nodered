@@ -132,7 +132,7 @@ httpd.exe -k start`
 <img width="1920" height="1080" alt="Screenshot (14)" src="https://github.com/user-attachments/assets/56621820-73e0-4716-9c5a-ff2a2d5cd4ab" />
 
 - Kiểm tra:
-  - Mở trình duyệt → truy cập: http://doduycop.com
+  - Mở trình duyệt → truy cập: http://haunhatninh.com
   - Nếu thấy chữ “It works!” hoặc lỗi 403 → Apache chạy thành công.
 
 <img width="1920" height="1080" alt="Screenshot (12)" src="https://github.com/user-attachments/assets/72ce9b56-feaa-4a36-b2f5-08a64194d703" />
