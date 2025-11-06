@@ -135,8 +135,6 @@ httpd.exe -k start`
   - Mở trình duyệt → truy cập: http://haunhatninh.com
   - Nếu thấy chữ “It works!” hoặc lỗi 403 → Apache chạy thành công.
 
-<img width="1920" height="1080" alt="Screenshot (12)" src="https://github.com/user-attachments/assets/72ce9b56-feaa-4a36-b2f5-08a64194d703" />
-
 ### CÀI NODE.JS VÀ NODE-RED
 #### B1. Cài Node.js
 - Tải file: `node-v20.19.5-x64.msi`
